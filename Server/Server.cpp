@@ -55,8 +55,10 @@ int main(int argc, char *argv[])
       n = read(newsockfd,buffer,255);
       if (n < 0)
         break;
-      else
-        printf("Stranger says: %s\n",buffer);
+      else{
+        printf("Parsing received data....\n");
+        new Command(new string(buffer)).print();
+      }
 
       n = write(newsockfd,"Interesting view!\n",19);
       if (n < 0)
