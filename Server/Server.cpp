@@ -1,7 +1,8 @@
 /* A simple server in the internet domain using TCP
    The port number is passed as an argument */
 #include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h> 
@@ -33,26 +34,37 @@ int main(int argc, char *argv[])
   if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
     error("ERROR on binding");
 
-  printf("Started. Waiting for client....\n");
-  listen(sockfd,5);
-  clilen = sizeof(cli_addr);
-  newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-  if (newsockfd < 0) 
-    error("ERROR on accept");
+  printf("Started sockets\n");
+  while(true){
+    printf("Waiting for client....\n");
+    listen(sockfd,5);
+    clilen = sizeof(cli_addr);
+    newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+    if (newsockfd < 0) 
+      error("ERROR on accept");
 
-  printf("Everything done, waiting for messages\n");
-  do{
-    bzero(buffer,256);
-    n = read(newsockfd,buffer,255);
-    if (n < 0)
-      error("ERROR reading from socket");
-    else
-      printf("Here is the message: %s\n",buffer);
-    n = write(newsockfd,"I got your message",18);
-    if (n < 0)
-      error("ERROR writing to socket");
-  }while(buffer != "stop");
-  close(newsockfd);
+    printf("Everything done, sending greeting and  waiting for messages\n");
+    n = write(newsockfd, "Greetings\n", 11);
+    if(n < 0)
+      error("ERROR sending greeting");
+
+    printf("Greeting sent. Hope he wants to be my friend\n");
+
+    do{
+      bzero(buffer,256);
+      n = read(newsockfd,buffer,255);
+      if (n < 0)
+        break;
+      else
+        printf("Stranger says: %s\n",buffer);
+
+      n = write(newsockfd,"Interesting view!\n",19);
+      if (n < 0)
+        break;
+    }while(true);
+    close(newsockfd);
+    printf("Client disconnected. Starting over...\n\n");
+  }
   close(sockfd);
   return 0; 
 }
