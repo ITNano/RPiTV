@@ -1,14 +1,10 @@
-include <string>
+#include <string>
 #include <list>
+#include "Util.h"
 
 using namespace std;
 
-class Util{
-	public:
-		static string* splitString(string s, char delimiter);
-}
-
-string* splitString(string s, string delimiter){
+string* Util::splitString(string s, string delimiter){
 	list<string> result;
 	size_t pos = 0;
 	string token;
