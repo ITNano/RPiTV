@@ -6,15 +6,20 @@
 
 using namespace std;
 
-Command::Command(string rawCommand){
-	string[] parts = Util.splitString(rawCommand, "\",");
-	string[] subparts;
+Command::Command(string* rawCommand){
+	list<string> parts = Util::splitString(rawCommand->substr(0, rawCommand->size()-1), "\",");
+	list<string> subparts;
 	string name, value;
-	for(const string &part : parts){
-		subparts = Util.splitString(part, "=");
-		if(sizeof(subparts)>0 && sizeof(subparts)/sizeof(subparts[0]) == 2){
-			name = subparts[0]->substr(1, subparts[0]->size()-2);
-			value = subparts[1]->substr(1, subparts[1]->size()-1);
+	list<string>::const_iterator iterator;
+	for(iterator = parts.begin(); iterator != parts.end(); iterator++){
+		subparts = Util::splitString(*iterator, "=");
+		if(subparts.size() == 2){
+			list<string>::const_iterator innerIterator = subparts.begin();
+			name = *innerIterator;
+			value = *(++innerIterator);
+			//Clean up from quotes etc.
+			name = name.substr(1, name.size()-2);
+			value = value.substr(1, value.size()-1);
 			if(name.compare("command") == 0){
 				this->setCommand(value);
 			}
@@ -22,7 +27,7 @@ Command::Command(string rawCommand){
 				this->setParameter(name, value);
 			}
 		}else{
-			cout << "Invalid part of command found: " << part;
+			cout << "Invalid part of command found: " << *iterator << endl;
 		}
 	}
 }
@@ -42,15 +47,16 @@ bool Command::hasParameter(string key){
 	return params.count(key)>0?true:false;
 }
 
-string Command::print(){
+void Command::print(){
 	cout << "Command: " << this->cmd << endl;
-	cout << "Params: ";
-	typedef map<string, string>::iterator it_type;
-	for(it_type iterator = this->params.begin(); iterator != this->params.end(); iterator++){
+	cout << "Params (" << params.size() << "): ";
+	map<string, string>::const_iterator iterator = params.begin();
+	for(;iterator != params.end(); ){
 		cout << iterator->first << "=" << iterator->second;
-		if(iterator+1 != this->params.end()){
+		iterator++;
+		if(iterator != params.end()){
 			cout << ", ";
 		}
-		cout << endl;
 	}
+	cout << endl;
 }

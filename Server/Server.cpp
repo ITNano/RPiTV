@@ -10,6 +10,8 @@
 #include <netinet/in.h>
 #include "Command.h"
 
+using namespace std;
+
 void error(const char *msg)
 {
   perror(msg);
@@ -58,7 +60,11 @@ int main(int argc, char *argv[])
         break;
       else{
         printf("Parsing received data....\n");
-        new Command(new string(buffer)).print();
+        string* cmdString = new string(buffer);
+        Command* cmd = new Command(cmdString);
+        delete cmdString;
+	cmd->print();
+	delete cmd;
       }
 
       n = write(newsockfd,"Interesting view!\n",19);

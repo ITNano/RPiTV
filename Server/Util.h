@@ -1,6 +1,7 @@
 #include <string>
+#include <list>
 
 class Util{
 	public:
-		static string* splitString(string s, char delimiter);
-}
+		static std::list<std::string> splitString(std::string s, std::string delimiter);
+};

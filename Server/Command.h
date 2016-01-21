@@ -4,16 +4,16 @@
 class Command{
 
 	public:
-		Command(string rawCommand);
-		void setCommand(string cmd){this->cmd = cmd;}
-		string getCommand(){return this->cmd;}
-		void setParameter(string key, string value);
-		string getParameter(string key);
-		bool hasParameter(string key);
+		Command(std::string* rawCommand);
+		void setCommand(std::string cmd){this->cmd = cmd;}
+		std::string getCommand(){return this->cmd;}
+		void setParameter(std::string key, std::string value);
+		std::string getParameter(std::string key);
+		bool hasParameter(std::string key);
 
 		void print();
 	private:
-		string cmd;
-		map<string,string> params;
+		std::string cmd;
+		std::map<std::string,std::string> params;
 
-}
+};
